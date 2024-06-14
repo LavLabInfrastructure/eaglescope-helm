@@ -35,6 +35,19 @@ spec:
             {{- with .Values.extraVolumeMounts }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
+        {{- range .Values.extraContainers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          imagePullPolicy: {{ .pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: 80
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          env:
+            {{- with .env }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+        {{- end }}
         {{- if .Values.landingPage.enabled }}
         - name: nginx
           image: nginx:latest

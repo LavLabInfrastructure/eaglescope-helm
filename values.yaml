@@ -18,6 +18,8 @@ config:
   name: ""
   files: {}
 
+extraContainers: []
+
 landingPage:
   enabled: true
   customHtml: ""
