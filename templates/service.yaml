@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "eaglescope.fullname" . }}
+  labels:
+    {{- include "eaglescope.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ if .Values.landingPage.enabled }}80{{ else }}1180{{ end }}
+  selector:
+    {{- include "eaglescope.selectorLabels" . | nindent 4 }}
