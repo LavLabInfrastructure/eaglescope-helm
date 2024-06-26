@@ -1,6 +1,6 @@
 # Eaglescope Helm Chart
 
-This Helm chart deploys Eaglescope, a cohort visualization service, along with optional data source containers that should serve JSON or CSV responses on port 80. The chart configures Nginx to reverse proxy requests to these containers and to the Eaglescope service. The landing page is highly recommended for multiple eaglescope configurations, and not optional for pages using extra containers as datasources, although you're more than welcome to bind a volume for a static datasource to disable the landing page.
+This Helm chart deploys Eaglescope, a cohort visualization service, along with optional data source containers that should serve JSON or CSV responses on the first port defined in extraContainers.ports[0].containerPort. The chart configures Nginx to reverse proxy requests to these containers and to the Eaglescope service. The landing page is highly recommended for multiple eaglescope configurations, and not optional for pages using extra containers as datasources, although you're more than welcome to bind a volume for a static datasource to disable the landing page.
 
 ## Installation
 
