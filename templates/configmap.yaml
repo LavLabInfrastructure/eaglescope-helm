@@ -79,8 +79,14 @@ data:
     </html>
     {{- end }}
   nginx.conf: |
+    map $http_x_forwarded_proto $real_scheme {
+        default $http_x_forwarded_proto;
+        ''      $scheme;
+    }
     server {
       listen 80;
+      absolute_redirect off;
+      port_in_redirect off;
       location / {
         root /usr/share/nginx/html;
         index index.html;
@@ -88,10 +94,15 @@ data:
       location /eaglescope/ {
         rewrite ^/eaglescope(/.*)$ $1 break;
         proxy_pass http://localhost:1180;
+
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+
+        proxy_redirect http:// $real_scheme://;
       }
       {{- range .Values.extraContainers }}
       location /{{ .name }}/ {
@@ -99,10 +110,15 @@ data:
         {{- with (first .ports) }}
         proxy_pass http://localhost:{{ .containerPort }};
         {{ end }}
+
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        
+        proxy_redirect http:// $real_scheme://;
       }
       {{- end }}
     }
