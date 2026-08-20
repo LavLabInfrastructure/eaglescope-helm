@@ -93,7 +93,7 @@ data:
       }
       location /eaglescope/ {
         rewrite ^/eaglescope(/.*)$ $1 break;
-        proxy_pass http://localhost:1180;
+        proxy_pass http://0.0.0.0:1180;
 
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -108,7 +108,7 @@ data:
       location /{{ .name }}/ {
         rewrite ^/{{ .name }}(/.*)$ $1 break;
         {{- with (first .ports) }}
-        proxy_pass http://localhost:{{ .containerPort }};
+        proxy_pass http://0.0.0.0:{{ .containerPort }};
         {{ end }}
 
         proxy_set_header Host $host;
